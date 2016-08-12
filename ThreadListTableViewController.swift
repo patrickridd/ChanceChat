@@ -16,6 +16,7 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
     
     var threads = [Thread]()
     var users = [User]()
+    var numbers = 0
     
     
     override func viewDidLoad() {
@@ -49,13 +50,24 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
                 return
             }
             self.threads = threads
-                    dispatch_async(dispatch_get_main_queue(), {
-            self.tableView.reloadData()
-                        
-        })
+        
+            ThreadController.sharedController.fetchThreadUserRecordsWithIDs(self.threads, completion: { 
+                dispatch_async(dispatch_get_main_queue(), {
+                    
+                    self.numbers += 1
+                    print("\(self.numbers)")
+                    
+                    self.tableView.reloadData()
+                    
+                })
+                
+            })
+            
 
         }
     }
+    
+    
     
     // Load Login Screen
     
@@ -91,16 +103,13 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+    }
     
-    
-    let dateFormatter: NSDateFormatter = {
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = .ShortStyle
-        formatter.doesRelativeDateFormatting = true
-        formatter.timeStyle = .ShortStyle
-        return formatter
-    }()
-    
+        
     
     // MARK: - Action Methods
     
@@ -113,21 +122,14 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("threadCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("threadCell", forIndexPath: indexPath) as? ThreadTableViewCell
+        
         let thread = self.threads[indexPath.row]
         
-        ThreadController.sharedController.getUsersFromThread(thread) { (users) in
-            var text = ""
-            for user in users {
-                text += "\(user.username) "
-            }
-            cell.textLabel?.text = text
-            cell.detailTextLabel?.text = self.dateFormatter.stringFromDate(thread.timestamp)
-            
-            
-        }
+        cell?.updateCell(thread)
         
-       return cell
+
+        return cell ?? UITableViewCell()
     }
     
     
@@ -154,7 +156,7 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
                 let sortedMessages = messages.sort({$0.0.timestamp.timeIntervalSince1970 < $0.1.timestamp.timeIntervalSince1970})
                 messageTVC.messages = sortedMessages
             })
-        } else if segue.identifier == "" {
+        } else if segue.identifier == "newThread" {
             
             let MessageTVC = segue.destinationViewController as? MessagesTableViewController
 

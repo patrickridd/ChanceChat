@@ -44,6 +44,7 @@ class UserController {
         
     }
     
+        
     func fetchCustomLoggedInUserRecord(completion: (record: CKRecord?) -> Void) {
         
         cloudKitManager.fetchLoggedInUserRecord { (record, error) in
@@ -60,7 +61,6 @@ class UserController {
                 
                 }, completion: { (records, error) in
                     
-                    completion(record: (records?.first))
             })
             
         }
@@ -68,6 +68,7 @@ class UserController {
     
     
     func fetchCustomLoggedInUser(completion: (user: User?) -> Void) {
+        
         fetchCustomLoggedInUserRecord { (record) in
             guard let record = record, user = User(record: record) else {
                 print("Could not fetch custom logged in user record or couldn't initialize the user from that record")

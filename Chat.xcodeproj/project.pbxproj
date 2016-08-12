@@ -22,6 +22,7 @@
 		2135013D1D5BC6070089722C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2135013C1D5BC6070089722C /* LoginViewController.swift */; };
 		213501401D5BC86E0089722C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2135013F1D5BC86E0089722C /* CloudKit.framework */; };
 		213501421D5CEBD20089722C /* MessagesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213501411D5CEBD20089722C /* MessagesTableViewController.swift */; };
+		213501441D5D7A070089722C /* ThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213501431D5D7A070089722C /* ThreadTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		2135013E1D5BC8640089722C /* Chat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Chat.entitlements; sourceTree = "<group>"; };
 		2135013F1D5BC86E0089722C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		213501411D5CEBD20089722C /* MessagesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessagesTableViewController.swift; path = ../MessagesTableViewController.swift; sourceTree = "<group>"; };
+		213501431D5D7A070089722C /* ThreadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,10 +115,11 @@
 		213501371D5A965C0089722C /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				213501411D5CEBD20089722C /* MessagesTableViewController.swift */,
 				213501381D5A96B80089722C /* ThreadListTableViewController.swift */,
+				213501411D5CEBD20089722C /* MessagesTableViewController.swift */,
 				2135013C1D5BC6070089722C /* LoginViewController.swift */,
 				213501231D5A7C990089722C /* ProfileTableViewController.swift */,
+				213501431D5D7A070089722C /* ThreadTableViewCell.swift */,
 			);
 			name = ViewController;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				213501301D5A8A0A0089722C /* Thread.swift in Sources */,
 				2135010E1D5A6F430089722C /* AppDelegate.swift in Sources */,
 				2135013D1D5BC6070089722C /* LoginViewController.swift in Sources */,
+				213501441D5D7A070089722C /* ThreadTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

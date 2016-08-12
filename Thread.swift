@@ -24,12 +24,13 @@ class Thread {
     var userReferences: [CKReference]
     let timestamp: NSDate
     let record: CKRecord
+    var users: [User]
     
-    init(users:[CKReference], timestamp: NSDate = NSDate(), record: CKRecord) {
-        self.userReferences = users
+    init(userReferences:[CKReference], timestamp: NSDate = NSDate(), record: CKRecord, users: [User] = []) {
+        self.userReferences = userReferences
         self.timestamp = timestamp
         self.record = record
-
+        self.users = users
 
     }
     
@@ -46,24 +47,8 @@ class Thread {
         self.record = record
         self.timestamp = timestamp
         self.userReferences = userReferences
-        
-//        for userRef in userReferences {
-//            var tempUsers = [User]()
-//            cloud.fetchRecordWithID(userRef.recordID, completion: { (record, error) in
-//                guard let record = record,
-//                    let user = User(record: record) else {
-//                        return
-//                }
-//                
-//                 tempUsers.append(user)
-//            })
-//
-//           
-//        }
-//
-//        
-//        self.users = tempUsers
-       
+        self.users = []
+
     }
     
 }

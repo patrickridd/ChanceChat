@@ -24,12 +24,18 @@ class ThreadController {
                 return
             }
             
-            //            let reference = CKReference(recordID: user.record.recordID, action: .DeleteSelf)
-            //            let predicate = NSPredicate(format: "users CONTAINS %@", argumentArray: [reference])
+                        let reference = CKReference(recordID: user.record.recordID, action: .DeleteSelf)
+                        let predicate = NSPredicate(format: "users CONTAINS %@", argumentArray: [reference])
             //
-            let predicate = NSPredicate(value: true)
+            //  let predicate = NSPredicate(value: true)
             self.cloudKitManager.fetchRecordsWithType(Thread.recordType, predicate: predicate, recordFetchedBlock: { (record) in
                 
+                guard let thread = Thread(record: record) else {
+                    return
+                }
+                if let completion = completion {
+                    completion(threads: [thread])
+                }
                 
                 
                 }, completion: { (records, error) in
@@ -76,10 +82,15 @@ class ThreadController {
                 return
             }
             
-            
+        UserController.sharedController.fetchCustomLoggedInUser({ (user) in
+            guard let user = user else {
+                print("Couldn't get current user for thread. ")
+                completion(thread: nil)
+                return
+            }
             let record = CKRecord(recordType: Thread.recordType)
             
-            let newusers = [users[0]]
+            let newusers = [user, users[1]]
             
             var references: [CKReference] = []
             
@@ -88,13 +99,17 @@ class ThreadController {
             }
             
             record[Thread.usersReferenceKey] = references
-            let thread = Thread(users: references, record: record)
+            let thread = Thread(userReferences: references, record: record)
             record[Thread.timestampKey] = thread.timestamp
             self.saveRecordToCloudKit(record)
             completion(thread: thread)
+            
+            
+
+            
+        })
+            
         }
-        
-        
     }
     
     
@@ -119,6 +134,7 @@ class ThreadController {
                 }
                 
                 users.append(user)
+                print(user.username)
                 
             }
             
@@ -130,6 +146,30 @@ class ThreadController {
         
     }
     
+    func fetchThreadUserRecordsWithIDs(threads: [Thread], completion: () -> Void) {
+        var count = threads.count
+        
+        for thread in threads {
+            
+            
+            for userReference in thread.userReferences {
+                cloudKitManager.fetchRecordWithID(userReference.recordID, completion: { (record, error) in
+                    guard let record = record, user = User(record: record) else {
+                        return
+                    }
+                    
+                    thread.users.append(user)
+                    count += 1
+                    if count > threads.count {
+                        completion()
+                    }
+                })
+                
+            }
+        }
+        
+    }
+
     
     //    func fetchUsersInThread(thread: Thread, completion: (users: [User]?)-> Void) {
     //        /// Trying to get Users of particular Threads
