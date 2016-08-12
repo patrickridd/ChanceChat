@@ -79,7 +79,123 @@ class UserController {
         }
     }
 
+
+    func getRandomUsers(completion: (users: [User])-> Void) {
+        fetchUsersBesidesLoggedInUser { (users) in
+            
+            let rand = Int(arc4random_uniform(UInt32(users.count-1)))
+            
+            let randomUsers = [users[rand]]
+            
+            completion(users: randomUsers)
+            
+            
+        }
+        
+        
+        
+    }
+    
+    func fetchUsersBesidesLoggedInUser(completion: (users: [User]) ->Void) {
+        
+        cloudKitManager.fetchLoggedInUserRecord { (record, error) in
+            guard let userRecord = record, currentUser = User(record: userRecord) else {
+                return
+            }
+            
+            //let referenceToExclude = CKReference(recordID: userRecord.recordID, action: .None)
+            
+            let predicate = NSPredicate(value: true)
+            
+            self.cloudKitManager.fetchRecordsWithType(User.recordType, predicate: predicate, recordFetchedBlock: { (record) in
+                
+                }, completion: { (records, error) in
+                    guard let records = records else {
+                        return
+                    }
+                    
+                    let users = records.flatMap({User(record: $0)})
+                    print(users[0].username)
+                    print(users[1].username)
+                    completion(users: users)
+            })
+        }
+    }
+    
+        
+        
+        func fetchUsersInApp(completion: (users: [User]?) -> Void) {
+            let predicate = NSPredicate(value: true)
+            cloudKitManager.fetchRecordsWithType(User.recordType, predicate: predicate, recordFetchedBlock: { (record) in
+                
+                
+            }) { (records, error) in
+                guard let records = records else {
+                    print("User Records were nil when unwrapping")
+                    completion(users: nil)
+                    return
+                }
+                var users = [User]()
+                for record in records {
+                    guard let user = User(record: record) else {
+                        print("User was not initialized")
+                        completion(users: nil)
+                        return
+                    }
+                    
+                    users.append(user)
+                    
+                }
+                completion(users: users)
+            }
+            
+        }
+        
+
+        func getUsersFromThread(thread: Thread, completion: (users: [User]) ->Void) {
+            var users = [User]()
+            
+            for reference in thread.userReferences {
+                let recordId = reference.recordID
+                
+                self.cloudKitManager.fetchRecordWithID(recordId, completion: { (record, error) in
+                    
+                    guard let record = record,
+                        user = User(record: record) else {
+                            print("Couldn't get record from references recordID")
+                            return
+                    }
+                    users.append(user)
+                })
+                
+            }
+            completion(users: users)
+        }
+
+
+        func fetchSenderOfMessage(message: Message, completion: (user: User) -> Void) {
+            let reference = CKReference(recordID: message.record.recordID, action: .DeleteSelf)
+            let predicate = NSPredicate(format: "sender CONTAINS %@", argumentArray: [reference])
+            
+            cloudKitManager.fetchRecordsWithType(User.recordType, predicate: predicate, recordFetchedBlock: { (record) in
+                
+                guard let user = User(record: record) else {
+                    print("Could not initialize User with record from Message's Reference")
+                    return
+                }
+                completion(user: user)
+                
+            }) { (records, error) in
+                
+                
+            }
+            
+        }
+
+
 }
+
+
 
 
 

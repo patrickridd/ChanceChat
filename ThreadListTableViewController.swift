@@ -52,7 +52,7 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
                 return
             }
             
-            let sortedThreads = threads.sort{$0.0.timestamp.timeIntervalSince1970 > $0.1.timestamp.timeIntervalSince1970}
+            let sortedThreads = threads.sort{$0.0.timestamp.timeIntervalSince1970 < $0.1.timestamp.timeIntervalSince1970}
             
             self.threads = sortedThreads
         
@@ -79,7 +79,7 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
     func presentLoginViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let loginScreen = storyboard.instantiateViewControllerWithIdentifier("loginScreen")
-        presentViewController(loginScreen, animated: true, completion: nil)
+        self.presentViewController(loginScreen, animated: true, completion: nil)
         
     }
     
