@@ -60,7 +60,7 @@ class UserController {
                 completion(record: record)
                 
                 }, completion: { (records, error) in
-                    
+                    completion(record: records?.first)
             })
             
         }

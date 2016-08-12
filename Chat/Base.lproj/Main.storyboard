@@ -150,7 +150,7 @@
         <!--Messages Table View Controller-->
         <scene sceneID="GE0-ci-hP3">
             <objects>
-                <viewController id="BFu-2C-ejD" customClass="MessagesTableViewController" customModule="Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BFu-2C-ejD" customClass="MessagesTableViewController" customModule="Chat" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="10Y-NV-mza"/>
                         <viewControllerLayoutGuide type="bottom" id="Dp7-8l-7ha"/>
@@ -216,7 +216,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ffv-b6-2B8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1364" y="343"/>
+            <point key="canvasLocation" x="1332" y="307"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="5L4-m3-ewF">
@@ -240,7 +240,7 @@
         <!--ChanceChat-->
         <scene sceneID="LA3-rW-Tnf">
             <objects>
-                <viewController id="wlz-Wo-xip" customClass="ThreadListTableViewController" customModule="Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="wlz-Wo-xip" customClass="ThreadListTableViewController" customModule="Chat" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="rhc-y6-vCT"/>
                         <viewControllerLayoutGuide type="bottom" id="VZf-b2-rZo"/>
@@ -264,7 +264,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="threadCell" rowHeight="51" id="DYz-rM-sBU" customClass="ThreadTableViewCell" customModule="Chat" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="92" width="320" height="51"/>
+                                        <rect key="frame" x="0.0" y="28" width="320" height="51"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DYz-rM-sBU" id="MJb-Sd-fho">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="50.5"/>
@@ -335,6 +335,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="2Wg-0Q-QLc"/>
+        <segue reference="Za8-ew-spv"/>
     </inferredMetricsTieBreakers>
 </document>

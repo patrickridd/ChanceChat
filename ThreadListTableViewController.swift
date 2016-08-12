@@ -22,6 +22,7 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         cloudKitManager.fetchLoggedInUserRecord { (record, error) in
             if let error = error  {
                 print("error fetching logged in user. Error: \(error.localizedDescription)")
@@ -29,6 +30,7 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
                 return
             }
         }
+        
         UserController.sharedController.fetchCustomLoggedInUserRecord { (record) in
           
             guard let record = record else {
@@ -49,7 +51,10 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
                 print("Threads were nil when unwrapping on ThreadTVC")
                 return
             }
-            self.threads = threads
+            
+            let sortedThreads = threads.sort{$0.0.timestamp.timeIntervalSince1970 > $0.1.timestamp.timeIntervalSince1970}
+            
+            self.threads = sortedThreads
         
             ThreadController.sharedController.fetchThreadUserRecordsWithIDs(self.threads, completion: { 
                 dispatch_async(dispatch_get_main_queue(), {
@@ -74,7 +79,7 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
     func presentLoginViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let loginScreen = storyboard.instantiateViewControllerWithIdentifier("loginScreen")
-        self.presentViewController(loginScreen, animated: true, completion: nil)
+        presentViewController(loginScreen, animated: true, completion: nil)
         
     }
     
@@ -101,12 +106,6 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
         alert.addAction(settingsAction)
         alert.addAction(dismissAction)
         self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        
     }
     
         

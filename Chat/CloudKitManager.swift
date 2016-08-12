@@ -21,10 +21,10 @@ class CloudKitManager {
     let publicDatabase = CKContainer.defaultContainer().publicCloudDatabase
     let privateDatabase = CKContainer.defaultContainer().privateCloudDatabase
     
-    init() {
-        
-        checkCloudKitAvailability()
-    }
+//    init() {
+//        
+//        checkCloudKitAvailability()
+//    }
     
     // MARK: - User Info Discovery
     
