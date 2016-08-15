@@ -40,7 +40,7 @@ class ThreadTableViewCell: UITableViewCell {
         ThreadTableViewCell.text = ""
         
         for user in thread.users {
-            ThreadTableViewCell.text += "\(user.username) "
+            ThreadTableViewCell.text += "\(user.username), "
         }
         
         self.usernameLabel.text = ThreadTableViewCell.text

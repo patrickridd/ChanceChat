@@ -57,7 +57,7 @@ class MessagesTableViewController: UIViewController, UITableViewDelegate, UITabl
             }
             var titleText = ""
             
-            ThreadController.sharedController.getUsersFromThread(thread, completion: { (users) in
+            UserController.sharedController.getUsersFromThread(thread, completion: { (users) in
                 
                 for messageUser in users {
                     if user.username == messageUser.username {
@@ -107,7 +107,7 @@ class MessagesTableViewController: UIViewController, UITableViewDelegate, UITabl
         
         let message = messages[indexPath.row]
         // Configure the cell...
-        ThreadController.sharedController.fetchSenderOfMessage(message) { (user) in
+        UserController.sharedController.fetchSenderOfMessage(message) { (user) in
             
             cell.textLabel?.text = "\(user.username) says: \(message.text)"
         }

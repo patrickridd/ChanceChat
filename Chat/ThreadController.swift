@@ -18,6 +18,8 @@ class ThreadController {
     var users = [User]()
     // Fetching Methods
     
+    
+    
     func fetchThreads(completion: ((threads: [Thread]?) -> Void)?) {
         UserController.sharedController.fetchCustomLoggedInUser { (user) in
             guard let user = user else {
@@ -27,8 +29,7 @@ class ThreadController {
             
                         let reference = CKReference(recordID: user.record.recordID, action: .DeleteSelf)
                         let predicate = NSPredicate(format: "users CONTAINS %@", argumentArray: [reference])
-            //
-            //  let predicate = NSPredicate(value: true)
+           
             self.cloudKitManager.fetchRecordsWithType(Thread.recordType, predicate: predicate, recordFetchedBlock: { (record) in
                 
                 guard let thread = Thread(record: record) else {
@@ -47,16 +48,15 @@ class ThreadController {
                     }
                     
                     let threads = records.flatMap({Thread(record: $0)})
+                    let sortedThreads = threads.sort{$0.0.timestamp.timeIntervalSince1970 < $0.1.timestamp.timeIntervalSince1970}
                     if let completion = completion {
-                        completion(threads: threads)
+                        completion(threads: sortedThreads)
                     }
             })
         }
     }
     
-    
-        
-    
+    // Creates Thread
     
     func createThreadWithUsers(completion: (thread: Thread?) -> Void) {
             
@@ -70,7 +70,7 @@ class ThreadController {
             UserController.sharedController.getRandomUsers({ (users) in
                 
                 
-                let newusers = [user, users[0]]
+                let newUsers = [user, users[0]]
                 
                 
                 let record = CKRecord(recordType: Thread.recordType)
@@ -78,7 +78,7 @@ class ThreadController {
                 var references: [CKReference] = []
                 
                 
-                for user in newusers {
+                for user in newUsers {
                     references.append(CKReference(recordID: user.record.recordID, action: .DeleteSelf))
                 }
                 
@@ -92,11 +92,11 @@ class ThreadController {
         })
     }
     
+    // Fetches User Records from Users in thread
     
-       func fetchThreadUserRecordsWithIDs(threads: [Thread], completion: () -> Void) {
+       func initializeUsersInThread(threads: [Thread], completion: () -> Void) {
         
         for thread in threads {
-            
             
             for userReference in thread.userReferences {
                 cloudKitManager.fetchRecordWithID(userReference.recordID, completion: { (record, error) in
@@ -109,13 +109,22 @@ class ThreadController {
                     
                     if self.count > thread.userReferences.count {
                         completion()
+
                     }
                 })
+                
+                
             }
+            
+            
+            
         }
+
         
     }
 
+    
+    // Fetches All messages from a Thread
     
     func fetchMessagesFromThread(thread: Thread, completion: (messages: [Message]?) ->Void) {
         let reference = CKReference(recordID: thread.record.recordID, action: .None)
@@ -136,7 +145,7 @@ class ThreadController {
     }
     
     
-        
+    // Adds one Message to a Thread
     
     func addMessageToThread(text: String, thread: Thread, sender: User, completion: () -> Void) {
         

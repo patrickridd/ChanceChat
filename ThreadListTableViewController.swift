@@ -15,36 +15,22 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
     @IBOutlet weak var tableView: UITableView!
     
     var threads = [Thread]()
-    var users = [User]()
     var numbers = 0
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        cloudKitManager.fetchLoggedInUserRecord { (record, error) in
-            if let error = error  {
-                print("error fetching logged in user. Error: \(error.localizedDescription)")
+        UserController.sharedController.checkCloudKit { (signedIn) in
+            if !(signedIn) {
                 self.alertUserToSignInToCloudKit()
-                return
             }
+            UserController.sharedController.checkForUserName({ (hasUserName) in
+                if !(hasUserName) {
+                    self.presentLoginViewController()
+                }
+            })
         }
-        
-        UserController.sharedController.fetchCustomLoggedInUserRecord { (record) in
-          
-            guard let record = record else {
-                print("custom logged in user record is nil")
-                self.presentLoginViewController()
-                return
-            }
-            
-            let user = User(record: record)
-            if user == nil {
-                self.presentLoginViewController()
-            }
-        }
-        
         
         ThreadController.sharedController.fetchThreads { (threads) in
             guard let threads = threads else {
@@ -52,26 +38,20 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
                 return
             }
             
-            let sortedThreads = threads.sort{$0.0.timestamp.timeIntervalSince1970 < $0.1.timestamp.timeIntervalSince1970}
-            
-            self.threads = sortedThreads
+            self.threads = threads
         
-            ThreadController.sharedController.fetchThreadUserRecordsWithIDs(self.threads, completion: { 
+            ThreadController.sharedController.initializeUsersInThread(self.threads, completion: { 
                 dispatch_async(dispatch_get_main_queue(), {
                     
                     self.numbers += 1
                     print("\(self.numbers)")
                     
                     self.tableView.reloadData()
-                    
-                })
-                
-            })
             
-
+                })
+            })
         }
     }
-    
     
     
     // Load Login Screen
@@ -108,13 +88,8 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-        
-    
-    // MARK: - Action Methods
-    
     
     // MARK: - DataSource Methods
-    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.threads.count
@@ -127,10 +102,8 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
         
         cell?.updateCell(thread)
         
-
         return cell ?? UITableViewCell()
     }
-    
     
     // MARK: - Navigation
     
@@ -161,26 +134,11 @@ class ThreadListTableViewController: UIViewController, UITableViewDelegate, UITa
 
             
             ThreadController.sharedController.createThreadWithUsers({ (thread) in
-                guard let thread = thread  else {
+                guard let thread = thread, messagesTVC = MessageTVC  else {
                     print("Thread was nil when unwrapping")
                     return
                 }
-                
-                
-                ThreadController.sharedController.fetchMessagesFromThread(thread, completion: { (messages) in
-                    guard let messages = messages, messagesTVC = MessageTVC else {
-                        print("messages were nil when unwrapping")
-                        return
-                    }
-                    let sortedMessages = messages.sort({$0.0.timestamp.timeIntervalSince1970 < $0.1.timestamp.timeIntervalSince1970})
-                   
-                    
-                    messagesTVC.messages = sortedMessages
                     messagesTVC.thread = thread
-                    
-                })
-                
-                
             })
             
             

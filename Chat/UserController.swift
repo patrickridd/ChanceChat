@@ -92,32 +92,35 @@ class UserController {
             
         }
         
-        
-        
     }
     
     func fetchUsersBesidesLoggedInUser(completion: (users: [User]) ->Void) {
         
         cloudKitManager.fetchLoggedInUserRecord { (record, error) in
-            guard let userRecord = record, currentUser = User(record: userRecord) else {
-                return
-            }
+//          guard let userRecord = record
+//            //, currentUser = User(record: userRecord)
+//            else {
+//                return
+//            }
             
-            //let referenceToExclude = CKReference(recordID: userRecord.recordID, action: .None)
             
+            
+           // let referenceToExclude = CKReference(recordID: userRecord.recordID, action: .None)
+            
+          //  let predicate = NSPredicate(format: "NOT(recordID IN %@)", argumentArray: [referenceToExclude])
             let predicate = NSPredicate(value: true)
             
             self.cloudKitManager.fetchRecordsWithType(User.recordType, predicate: predicate, recordFetchedBlock: { (record) in
-                
+            
                 }, completion: { (records, error) in
                     guard let records = records else {
                         return
                     }
                     
                     let users = records.flatMap({User(record: $0)})
-                    print(users[0].username)
                     print(users[1].username)
-                    completion(users: users)
+                    //print(users[1].username)
+                    completion(users: records.flatMap({User(record: $0)}))
             })
         }
     }
@@ -191,7 +194,42 @@ class UserController {
             }
             
         }
+    
+    func checkCloudKit(completion: (signedIn: Bool) -> Void) {
+        cloudKitManager.fetchLoggedInUserRecord { (record, error) in
+            if let error = error  {
+                print("error fetching logged in user. Error: \(error.localizedDescription)")
+                completion(signedIn: false)
+                return
+            }
+            completion(signedIn: true)
+        }
+        
+        
+    }
 
+    
+    func checkForUserName(completion: (hasUserName: Bool) -> Void) {
+        fetchCustomLoggedInUserRecord { (record) in
+            
+            guard let record = record else {
+                print("custom logged in user record is nil")
+                completion(hasUserName: false)
+                return
+            }
+            
+            let user = User(record: record)
+            if user == nil {
+                completion(hasUserName: false)
+            }
+            
+            completion(hasUserName: true)
+            
+        }
+
+        
+        
+    }
 
 }
 
